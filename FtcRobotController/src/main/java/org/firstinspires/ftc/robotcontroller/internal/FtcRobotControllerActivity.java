@@ -31,6 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package org.firstinspires.ftc.robotcontroller.internal;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -312,6 +314,8 @@ public class FtcRobotControllerActivity extends Activity
         });
         popupMenu.inflate(R.menu.ftc_robot_controller);
         popupMenu.show();
+
+        FtcDashboard.start();
       }
     });
 
@@ -383,6 +387,7 @@ public class FtcRobotControllerActivity extends Activity
 
     // check to see if there is a preferred Wi-Fi to use.
     checkPreferredChannel();
+
   }
 
   protected UpdateUI createUpdateUI() {
