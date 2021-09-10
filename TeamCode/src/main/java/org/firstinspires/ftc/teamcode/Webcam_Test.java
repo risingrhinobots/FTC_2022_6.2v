@@ -1,4 +1,4 @@
-/*
+package org.firstinspires.ftc.teamcode;/*
  * Copyright (c) 2020 OpenFTC Team
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,7 +33,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.firstinspires.ftc.*;
+import org.firstinspires.ftc.teamcode.*;
 
 @TeleOp(name = "Webcam Test", group = "UltimateGame")
 //disabled
