@@ -29,6 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import java.io.*;
+import java.lang.Thread;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -51,9 +55,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Motor_Test_T", group="Linear Opmode")
+@Autonomous(name="auto_motor_Test", group="Linear Opmode")
 //@Disabled
-public class motor_Test_T extends LinearOpMode {
+public class auto_motor_Test extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -79,6 +83,7 @@ public class motor_Test_T extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+        //if (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
             double motorPower;
@@ -89,15 +94,26 @@ public class motor_Test_T extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
-            motorPower = Range.clip(drive + 0, -1, 1) ;
+            //motorPower = Range.clip(drive + 0, -1, 1) ;
 
+            motorPower = 0.25;
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            motor.setPower(motorPower);
+
+
+
+            try {
+                telemetry.addData("Status", "in try statement");
+                Thread.sleep(4000);
+                motor.setPower(motorPower);
+            } catch (Exception e) {
+
+            }
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
