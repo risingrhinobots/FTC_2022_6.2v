@@ -64,7 +64,20 @@ public class Webcam_Test extends LinearOpMode
             @Override
             public void onOpened()
             {
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                boolean isOk = true;
+                try {
+                    phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+                }
+                catch (Exception e) {
+                    isOk = false;
+                   }
+                if(isOk) {
+                telemetry.addData("status:", "Ok");
+            }
+                else {
+                    telemetry.addData("status: ", "Error");
+                    telemetry.update();
+                }
             }
         });
 
