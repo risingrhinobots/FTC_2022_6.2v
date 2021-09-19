@@ -124,7 +124,22 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             BackLeftDrive.setPower(BackLeftPower);
             BackRightDrive.setPower(BackRightPower);
 
+            //creates a thread class that starts the motor and starts the timer at the same time
+            class shootAndStart implements Runnable{
+                public void run(){
+                    ElapsedTime motorRunTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+                    FrontLeftDrive.setPower(0.6);
+                    motorRunTime.startTime();
+                    if(motorRunTime.time() == 120){
+                        FrontLeftDrive.setPower(0.0);
+                        motorRunTime.reset();
+                    }
+                }
+            }
 
+            //running the thread
+            Thread thread1 = new Thread(new shootAndStart());
+            thread1.start();
 
 
 
