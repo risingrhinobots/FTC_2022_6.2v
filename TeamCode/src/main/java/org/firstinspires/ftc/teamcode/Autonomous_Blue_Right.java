@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 * go in reverse at slow speed for 40 inches
 * turn on carousel motor at a speed of 0.2
 * */
-
+@Autonomous(name = "Pushbot: AutoTest1",group ="FreightFrenzy")
 public class Autonomous_Blue_Right extends LinearOpMode{
     HardwarePushbot_TC robot = new HardwarePushbot_TC();
     private ElapsedTime runtime = new ElapsedTime();
@@ -30,7 +30,30 @@ public class Autonomous_Blue_Right extends LinearOpMode{
     @Override
     public void runOpMode() {
 
+        double clawPosition = 0.1;
+        robot.init(hardwareMap);
+        telemetry.addData("Status","Resetting Encoders");
+        telemetry.update();
+        robot.frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+        robot.frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        telemetry.addData("Path0","Starting at %7d :%7d",
+                robot.frontLeft.getCurrentPosition(), robot.frontRight.getCurrentPosition());
+
+        telemetry.update();
+
+        waitForStart();
+
     }
+
 
 
 }
