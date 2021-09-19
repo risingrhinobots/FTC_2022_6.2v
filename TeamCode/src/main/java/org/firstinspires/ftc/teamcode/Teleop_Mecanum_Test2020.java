@@ -29,10 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import androidx.renderscript.ScriptIntrinsicBLAS;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -61,6 +64,10 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
     private DcMotor FrontRightDrive = null;
     private DcMotor BackLeftDrive = null;
     private DcMotor BackRightDrive = null;
+    private DcMotor CarouselDrive = null;
+    private DcMotor SidePower = null;
+    private Servo ClawMotor = null;
+
 
 
 
@@ -76,6 +83,9 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "FrontRight");
         BackLeftDrive = hardwareMap.get(DcMotor.class,"BackLeft");
         BackRightDrive = hardwareMap.get(DcMotor.class,"BackRight");
+        CarouselDrive = hardwareMap.get(DcMotor.class, "CarouselDrive");
+        SidePower = hardwareMap.get(DcMotor.class, "SidePower");
+        ClawMotor = hardwareMap.get(Servo.class,"ClawMotor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -83,6 +93,9 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
         FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
         BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        CarouselDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+        SidePower.setDirection(DcMotorSimple.Direction.REVERSE);
+        ClawMotor.setDirection(Servo.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -97,6 +110,8 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             double BackLeftPower;
             double BackRightPower;
             double sidePower;
+            double carouselPower;
+            double clawPower;
 
             double drive = 0.9*(-gamepad1.left_stick_y);
             double turn  =  0.7 * (gamepad1.right_stick_x);
@@ -124,6 +139,24 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             BackLeftDrive.setPower(BackLeftPower);
             BackRightDrive.setPower(BackRightPower);
 
+            if(gamepad1.right_bumper){
+                CarouselDrive.setPower(-0.2);
+            }
+            if(gamepad1.left_bumper){
+                CarouselDrive.setPower(0.2);
+            }
+            if(gamepad1.y){
+                CarouselDrive.setPower(0.0);
+            }
+            if(gamepad1.a){
+                SidePower.setPower(-0.9);
+            }
+            if(gamepad1.b){
+                SidePower.setPower(0.6);
+            }
+            if(gamepad1.dpad_down){
+                SidePower.setPower(0.0);
+            }
             //creates a thread class that starts the motor and starts the timer at the same time
             class shootAndStart implements Runnable{
                 public void run(){
@@ -141,6 +174,15 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             Thread thread1 = new Thread(new shootAndStart());
             thread1.start();
 
+            if(gamepad2.dpad_up){
+                ClawMotor.setPosition(1.0);
+            }
+            if(gamepad2.dpad_left) {
+                ClawMotor.setPosition(0.5);
+            }
+            if(gamepad2.dpad_down){
+                ClawMotor.setPosition(0.0);
+            }
 
 
 
