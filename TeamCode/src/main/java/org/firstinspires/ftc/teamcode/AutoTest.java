@@ -162,7 +162,7 @@ public class AutoTest extends LinearOpMode {
         encoderDrive(0.2, -1, -1,-1,-1,2);
         encoderDrive(0.2, 0, 4,4,0,2);
         robot.ArmMotor.setTargetPosition(50);
-      //
+      //Autonomous Blue Ends
 
 
 
