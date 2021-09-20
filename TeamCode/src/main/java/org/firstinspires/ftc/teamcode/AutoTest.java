@@ -39,6 +39,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.HardwarePushbot_TC;
 
+import java.util.concurrent.TimeUnit;
+
 //import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 //import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
@@ -133,24 +135,30 @@ public class AutoTest extends LinearOpMode {
         //Drive forward to the target BOX
 
         class Carousel implements Runnable{
-            ElapsedTime runElapsedTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
+            ElapsedTime runElapsedTime = new ElapsedTime();
+            boolean stillRunning = true;
             public void run(){
                 runElapsedTime.reset();
                 runElapsedTime.startTime();
-                if(runElapsedTime.time() == 0.1){
+                while(stillRunning)
+                {
+                    telemetry.addData("Elapsed Time From Thread", "Thread Elapsed Time: %7d ",runElapsedTime);
+                    telemetry.update();
+                }
+                if(runElapsedTime.seconds() == 1){
                     robot.CarouselDrive.setPower(0);
                 }
-
+                stillRunning = false;
             }
         }
         Thread thread1 = new Thread(new Carousel());
-        ElapsedTime runElapsedTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
         robot.CarouselDrive.setPower(0.2);
         encoderDrive(0.2, -18,-18,-18,-18,2);
         sleep(1000);
         thread1.start();
         sleep(5000);
         encoderDrive(0.7, 111,111,111,111,7);
+        robot.CarouselDrive.setPower(0);
         encoderDrive(0.2, -1, -1,-1,-1,2);
         encoderDrive(0.2, 0, 4,4,0,2);
         robot.ArmMotor.setTargetPosition(50);

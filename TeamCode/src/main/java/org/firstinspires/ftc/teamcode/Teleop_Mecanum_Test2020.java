@@ -145,16 +145,19 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             ArmMotor.setPower(ArmPower);
            // CarouselDrive.setPower(FrontRightPower);
 
-
+            //Carousel Motor for Blue Side
             if(gamepad1.right_bumper){
                     CarouselDrive.setPower(-0.2);
             }
+            //Carousel Motor for Red Side
             if(gamepad1.left_bumper){
                 CarouselDrive.setPower(0.2);
             }
+            //Carousel Motor global turn off button
             if(gamepad1.y){
                 CarouselDrive.setPower(0.0);
             }
+            //intake system
             if(gamepad1.a){
                 SidePower.setPower(-0.9);
 
@@ -165,7 +168,7 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             if(gamepad1.dpad_down){
                 SidePower.setPower(0.0);
             }
-//program for changing the position and direction of the servo
+            //program for changing the position and direction of the arm servo
             if(gamepad2.dpad_up) {
                 ArmDispenser.setPosition(0.5);
             }
