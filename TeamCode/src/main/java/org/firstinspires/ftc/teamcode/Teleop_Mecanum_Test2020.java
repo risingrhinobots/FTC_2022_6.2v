@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop_Mecanum_Test2020", group="Test2020")
+@TeleOp(name="Teleop_Mecanum_Test2021", group="Test2021")
 //@Disabled
 public class Teleop_Mecanum_Test2020 extends LinearOpMode {
 
@@ -66,9 +66,8 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
     private DcMotor BackRightDrive = null;
     private DcMotor CarouselDrive = null;
     private DcMotor SidePower = null;
-    private Servo ClawMotor = null;
-
-
+    private DcMotor ArmMotor = null;
+    private Servo ArmDispenser = null;
 
 
     @Override
@@ -83,19 +82,21 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
         FrontRightDrive = hardwareMap.get(DcMotor.class, "FrontRight");
         BackLeftDrive = hardwareMap.get(DcMotor.class,"BackLeft");
         BackRightDrive = hardwareMap.get(DcMotor.class,"BackRight");
-        CarouselDrive = hardwareMap.get(DcMotor.class, "CarouselDrive");
+        CarouselDrive = hardwareMap.get(DcMotor.class,"CarouselDrive");
         SidePower = hardwareMap.get(DcMotor.class, "SidePower");
-        ClawMotor = hardwareMap.get(Servo.class,"ClawMotor");
+        ArmMotor = hardwareMap.get(DcMotor.class, "ArmMotor");
+        ArmDispenser = hardwareMap.get(Servo.class, "ArmDispenser");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        FrontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        FrontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        BackLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        BackRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        CarouselDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-        SidePower.setDirection(DcMotorSimple.Direction.REVERSE);
-        ClawMotor.setDirection(Servo.Direction.FORWARD);
+        FrontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        FrontRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        BackLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        BackRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        CarouselDrive.setDirection(DcMotor.Direction.FORWARD);
+        SidePower.setDirection(DcMotor.Direction.REVERSE);
+        ArmMotor.setDirection(DcMotor.Direction.FORWARD);
+        ArmDispenser.setDirection(Servo.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -110,10 +111,12 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             double BackLeftPower;
             double BackRightPower;
             double sidePower;
-            double carouselPower;
-            double clawPower;
+            double carouselPower = 0;
+            double ArmPower;
+            double ArmDispenserPower;
 
             double drive = 0.9*(-gamepad1.left_stick_y);
+            double arm = 0.5*(-gamepad2.left_stick_x);
             double turn  =  0.7 * (gamepad1.right_stick_x);
             double strafe = 0.9*(gamepad1.left_stick_x);
 
@@ -124,10 +127,11 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
 
 
 
-            FrontLeftPower    = Range.clip(-drive - turn - strafe, -1, 1) ;
-            FrontRightPower   = Range.clip(-drive + turn + strafe, -1, 1) ;
-            BackLeftPower    = Range.clip(-drive - turn + strafe, -1, 1) ;
-            BackRightPower   = Range.clip(-drive + turn - strafe, -1, 1) ;
+            FrontLeftPower    = Range.clip(-drive + turn - strafe, -1, 1) ;
+            FrontRightPower   = Range.clip(-drive - turn + strafe, -1, 1) ;
+            BackLeftPower    = Range.clip(-drive + turn + strafe, -1, 1) ;
+            BackRightPower   = Range.clip(-drive - turn - strafe, -1, 1) ;
+            ArmPower = Range.clip(-arm, -1,1);
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
@@ -138,9 +142,12 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             FrontRightDrive.setPower(FrontRightPower);
             BackLeftDrive.setPower(BackLeftPower);
             BackRightDrive.setPower(BackRightPower);
+            ArmMotor.setPower(ArmPower);
+           // CarouselDrive.setPower(FrontRightPower);
+
 
             if(gamepad1.right_bumper){
-                CarouselDrive.setPower(-0.2);
+                    CarouselDrive.setPower(-0.2);
             }
             if(gamepad1.left_bumper){
                 CarouselDrive.setPower(0.2);
@@ -150,39 +157,22 @@ public class Teleop_Mecanum_Test2020 extends LinearOpMode {
             }
             if(gamepad1.a){
                 SidePower.setPower(-0.9);
+
             }
             if(gamepad1.b){
-                SidePower.setPower(0.6);
+                SidePower.setPower(1);
             }
             if(gamepad1.dpad_down){
                 SidePower.setPower(0.0);
             }
-            //creates a thread class that starts the motor and starts the timer at the same time
-            class shootAndStart implements Runnable{
-                public void run(){
-                    ElapsedTime motorRunTime = new ElapsedTime(ElapsedTime.Resolution.SECONDS);
-                    FrontLeftDrive.setPower(0.6);
-                    motorRunTime.startTime();
-                    if(motorRunTime.time() == 120){
-                        FrontLeftDrive.setPower(0.0);
-                        motorRunTime.reset();
-                    }
-                }
+//program for changing the position and direction of the servo
+            if(gamepad2.dpad_up) {
+                ArmDispenser.setPosition(0.5);
+            }
+            if(gamepad2.dpad_down) {
+                ArmDispenser.setPosition(0);
             }
 
-            //running the thread
-            Thread thread1 = new Thread(new shootAndStart());
-            thread1.start();
-
-            if(gamepad2.dpad_up){
-                ClawMotor.setPosition(1.0);
-            }
-            if(gamepad2.dpad_left) {
-                ClawMotor.setPosition(0.5);
-            }
-            if(gamepad2.dpad_down){
-                ClawMotor.setPosition(0.0);
-            }
 
 
 
