@@ -132,7 +132,7 @@ public class AutoTest extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
         // FORWARD DRIVE SAMPLE. reverse drive will be all negative values
 
-        //Drive forward to the target BOX
+        //Autonomous Blue
 
         class Carousel implements Runnable{
             ElapsedTime runElapsedTime = new ElapsedTime();
